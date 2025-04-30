@@ -50,14 +50,16 @@ The agent follows a **Perceive-Plan-Act** cycle:
 ---
 
 ## 📁 Project Structure
-├── main.py # Main execution script, orchestrates the agent loop
-├── perception.py # Handles understanding user input via Gemini
-├── decision.py # Handles planning the next action via Gemini
-├── action.py # Defines and executes available tools (math, Paint UI, etc.)
-├── memory.py # Simple memory management class
-├── requirements.txt # Python package dependencies
-├── .env # Environment variables (Gitignored)
-└── README.md # This file
+
+- `main.py` – Main execution script, orchestrates the agent loop
+- `perception.py` – Handles understanding user input via Gemini
+- `decision.py` – Handles planning the next action via Gemini
+- `action.py` – Defines and executes available tools (math, Paint UI, etc.)
+- `memory.py` – Simple memory management class
+- `requirements.txt` – Python package dependencies
+- `.env` – Environment variables (Gitignored)
+- `README.md` – This file
+
 
 
 
@@ -118,17 +120,40 @@ The script will first ask for your preferences (this is currently just stored in
 Example Input:
 Convert letters of INDIA to ASCII numbers, get their exponentials, and then sum them. Open Paint, draw a rectangle on it, add text and paste the final sum there
 The agent will then proceed through the perceive-plan-act cycle, printing tool calls and results, potentially opening and manipulating MS Paint on your screen.
-🧠 How It Works
-Input: main.py takes user input.
-Perception: perception.py sends the input to Gemini to get structured intent and entities.
-Decision: decision.py sends the perception results, available tools, and memory (last_result) to Gemini, asking it to choose the next FUNCTION_CALL or provide a FINAL_ANSWER.
-Action: action.py parses the FUNCTION_CALL, finds the corresponding tool function (which could be sync or async), executes it with the provided arguments, and returns the result. main.py uses asyncio.run and await to handle async tool calls correctly.
-Memory Update: main.py stores the last_tool called and its last_result in the MemoryManager.
-Loop: The process repeats from Step 3 (Decision) until Gemini provides a FINAL_ANSWER or the maximum step count is reached.
-🔧 Tooling Details
-The available tools are defined in action.py and registered in the TOOLS dictionary. The decision-making prompt in decision.py makes the LLM aware of these tools.
-The MS Paint tools (open_paint, draw_rectangle, add_text_in_paint) use pywinauto to interact with the Paint application window. They rely on:
-Starting/Connecting to the mspaint.exe process.
-Finding UI elements (like the main window and canvas) often by class_name.
-Simulating mouse clicks (click_input, press_mouse_input, etc.) and keyboard input (type_keys).
-Hardcoded Coordinates: Some actions (like clicking specific toolbar buttons) use absolute screen coordinates defined within the functions.
+
+🧠 **How It Works**
+
+1. **Input:** `main.py` takes user input.
+2. **Perception:** `perception.py` sends the input to Gemini to get structured `intent` and `entities`.
+3. **Decision:** `decision.py` sends the perception results, available tools, and memory (`last_result`) to Gemini, asking it to choose the next `FUNCTION_CALL` or provide a `FINAL_ANSWER`.
+4. **Action:** `action.py` parses the `FUNCTION_CALL`, finds the corresponding tool function (which could be `sync` or `async`), executes it with the provided arguments, and returns the result. `main.py` uses `asyncio.run` and `await` to handle async tool calls correctly.
+5. **Memory Update:** `main.py` stores the `last_tool` called and its `last_result` in the `MemoryManager`.
+6. **Loop:** The process repeats from Step 3 (Decision) until Gemini provides a `FINAL_ANSWER` or the maximum step count is reached.
+
+
+🛠️ **Tooling Details**
+
+The available tools are defined in `action.py` and registered in the `TOOLS` dictionary. The decision-making prompt in `decision.py` makes the LLM aware of these tools.
+
+The MS Paint tools (`open_paint`, `draw_rectangle`, `add_text_in_paint`) use `pywinauto` to interact with the Paint application window. They rely on:
+
+- Starting/Connecting to the `mspaint.exe` process.
+- Finding UI elements (like the main window and canvas) often by `class_name`.
+- Simulating mouse clicks (`click_input`, `press_mouse_input`, etc.) and keyboard input (`type_keys`).
+- **Hardcoded Coordinates:** Some actions (like clicking specific toolbar buttons) use absolute screen coordinates defined within the functions.
+
+
+⚠️ **Caveats & Limitations**
+
+- **UI Automation Brittleness:**
+  - The Paint automation relies heavily on finding UI elements and **hardcoded coordinates**. Changes in screen resolution, Windows scaling, Paint versions, or even OS themes can easily break this automation. More robust automation would use accessibility IDs or control IDs where possible.
+  - The agent assumes Paint is in a default state. Unexpected dialogs or window states can cause errors.
+
+- **Windows Only:** The Paint automation tools will only work on Windows.
+
+- **Error Handling:** Error handling is basic. If a tool fails unexpectedly, the agent might get stuck or provide an unhelpful error message.
+
+- **Context Window:** Complex tasks requiring many steps might exceed the context window or reasoning capabilities of the planning LLM.
+
+- **`MAX_STEPS`:** A hard limit (`MAX_STEPS` in `main.py`) prevents infinite loops but might cut off complex tasks prematurely.
+
