@@ -30,11 +30,7 @@ The agent follows a **Perceive-Plan-Act** cycle:
 
 ## 🖼️ Demo
 
-*(Consider adding the screenshot you provided earlier here, showing the terminal output for the "INDIA" -> Paint task)*
-
-
-
-*(Replace the placeholder screenshot comment above with actual Markdown image link: `![Agent Demo Screenshot](path/to/your/screenshot.png)`)*
+*https://www.youtube.com/watch?v=jR1Ab_Pr2ds*
 
 ---
 
