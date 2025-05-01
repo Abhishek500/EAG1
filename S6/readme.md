@@ -1,7 +1,6 @@
 # Gemini Powered Multi-Tool Agent 🚀
 
 [![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This project demonstrates an AI agent powered by Google's Gemini model. The agent can understand natural language requests, break them down into sequential steps, and execute those steps using a predefined set of tools. Notably, it includes tools for performing calculations and **automating the UI of Microsoft Paint** on Windows using `pywinauto`.
 
@@ -44,7 +43,6 @@ The agent follows a **Perceive-Plan-Act** cycle:
 *   **Python 3.9+**
 *   **Google Generative AI SDK (`google-generativeai`)**: For interacting with the Gemini API.
 *   **PyWinAuto**: For Windows GUI automation (controlling MS Paint).
-*   **Pillow (PIL Fork)**: Used by some tools (e.g., if image processing were added).
 *   **Python-Dotenv**: For managing environment variables (API keys).
 
 ---
@@ -56,7 +54,6 @@ The agent follows a **Perceive-Plan-Act** cycle:
 - `decision.py` – Handles planning the next action via Gemini
 - `action.py` – Defines and executes available tools (math, Paint UI, etc.)
 - `memory.py` – Simple memory management class
-- `requirements.txt` – Python package dependencies
 - `.env` – Environment variables (Gitignored)
 - `README.md` – This file
 
@@ -75,8 +72,8 @@ The agent follows a **Perceive-Plan-Act** cycle:
 
 2.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git
-    cd YOUR_REPOSITORY_NAME
+    git clone https://github.com/Abhishek500/EAG1/S6.git
+    cd S6
     ```
 
 3.  **Set up a Virtual Environment (Recommended):**
@@ -91,13 +88,8 @@ The agent follows a **Perceive-Plan-Act** cycle:
     source venv/bin/activate
     ```
 
-4.  **Install Dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-    *(You'll need to create this `requirements.txt` file based on your imports. See below)*
 
-5.  **Configure API Key:**
+4.  **Configure API Key:**
     *   Obtain a Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
     *   Create a file named `.env` in the project root directory.
     *   Add your API key to the `.env` file:
@@ -128,7 +120,6 @@ The agent will then proceed through the perceive-plan-act cycle, printing tool c
 3. **Decision:** `decision.py` sends the perception results, available tools, and memory (`last_result`) to Gemini, asking it to choose the next `FUNCTION_CALL` or provide a `FINAL_ANSWER`.
 4. **Action:** `action.py` parses the `FUNCTION_CALL`, finds the corresponding tool function (which could be `sync` or `async`), executes it with the provided arguments, and returns the result. `main.py` uses `asyncio.run` and `await` to handle async tool calls correctly.
 5. **Memory Update:** `main.py` stores the `last_tool` called and its `last_result` in the `MemoryManager`.
-6. **Loop:** The process repeats from Step 3 (Decision) until Gemini provides a `FINAL_ANSWER` or the maximum step count is reached.
 
 
 🛠️ **Tooling Details**
